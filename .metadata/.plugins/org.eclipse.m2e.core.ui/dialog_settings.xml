@@ -2,6 +2,7 @@
 <section name="Workbench">
 	<section name="MavenProjectImportWizardPage">
 		<list key="rootDirectory">
+			<item value="/Users/florentin/Documents/EPSI/I4B/Integration_Continue/TP1/word-count"/>
 			<item value="/Users/florentin/Documents/EPSI/I4B/Intégration Continue/TP1/word-count"/>
 		</list>
 		<list key="projectNameTemplate">
