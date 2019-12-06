@@ -7,7 +7,6 @@ pipeline {
                echo 'Build...'
                sh 'mvn clean'
                sh 'mvn compile'
-               sh 'mvn site'
             }
         }
         stage('Test') {
@@ -26,6 +25,7 @@ pipeline {
         stage('Analyse') {
             steps {
                 echo 'Analyse...'
+                sh 'mvn site'
                 sh 'mvn checkstyle:checkstyle'
                 sh 'mvn spotbugs:spotbugs'
                 sh 'mvn pmd:pmd'
