@@ -36,10 +36,10 @@ pipeline {
         always {
             junit '**/surefire-reports/*.xml'
             recordIssues enabledForFailure: true, tools: [mavenConsole(), java(), javaDoc()]
-            recordIssues enabledForFailure: true, tool: checkstyle()
-            recordIssues enabledForFailure: true, tool: spotBugs()
-            recordIssues enabledForFailure: true, tool: cpd(pattern: '**/target/cpd.xml')
-            recordIssues enabledForFailure: true, tool: pmdParser(pattern: '**/target/pmd.xml')
+            recordIssues enabledForFailure: true, tools: checkstyle()
+            recordIssues enabledForFailure: true, tools: spotBugs()
+            recordIssues enabledForFailure: true, tools: cpd(pattern: '**/target/cpd.xml')
+            recordIssues enabledForFailure: true, tools: pmdParser(pattern: '**/target/pmd.xml')
          }
     }
 }
