@@ -7,7 +7,6 @@ pipeline {
                echo 'Build...'
                sh 'mvn clean'
                sh 'mvn compile'
-               archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
         stage('Test') {
@@ -20,6 +19,7 @@ pipeline {
             steps {
                 echo 'Packaging...'
                 sh 'mvn package'
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
     }
