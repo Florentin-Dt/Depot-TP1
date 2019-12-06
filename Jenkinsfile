@@ -5,6 +5,7 @@ pipeline {
         stage('Build') {
             steps {
                echo 'Build...'
+               sh 'mvn clean'
                sh 'mvn compile'
                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             }
