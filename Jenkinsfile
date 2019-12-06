@@ -26,7 +26,7 @@ pipeline {
             steps {
                 echo 'Analyse...'
                 sh 'mvn checkstyle:checkstyle'
-                sh 'mvn spotBugs:spotBugs'
+                sh 'mvn spotbugs:spotbugs'
                 sh 'mvn pmd:pmd'
                 sh 'mvn compile site'
             }
