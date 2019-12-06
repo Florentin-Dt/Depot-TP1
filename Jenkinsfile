@@ -22,5 +22,16 @@ pipeline {
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
+        stage('Analyse') {
+            steps {
+                echo 'Analyse...'
+                sh 'mvn checkstyle:checkstyle'
+                sh 'mvn spotbugs:spotbugs'
+            }
+        }
+    }
+    post {
+        always {
+            junit '**/surefire-reports/*.xml' }
     }
 }
