@@ -27,6 +27,7 @@ pipeline {
                 echo 'Analyse...'
                 sh 'mvn checkstyle:checkstyle'
                 sh 'mvn spotbugs:spotbugs'
+                sh 'mvn pmd:pmd'
             }
         }
     }
