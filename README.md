@@ -5,7 +5,7 @@ Lancer Jenkins
     
 Ensuite se rendre sur 
 
-       localhost:8080
+    localhost:8080
        
 Login/Mdp: admin admin
 
