@@ -26,13 +26,19 @@ pipeline {
             steps {
                 echo 'Analyse...'
                 sh 'mvn checkstyle:checkstyle'
-                sh 'mvn spotbugs:spotbugs'
+                sh 'mvn spotBugs:spotBugs'
                 sh 'mvn pmd:pmd'
             }
         }
     }
     post {
         always {
-            junit '**/surefire-reports/*.xml' }
+            junit '**/surefire-reports/*.xml'
+            recordIssues enabledForFailure: true, tools: [mavenConsole(), java(), javaDoc()]
+            recordIssues enabledForFailure: true, tool: checkstyle()
+            recordIssues enabledForFailure: true, tool: spotBugs()
+            recordIssues enabledForFailure: true, tool: cpd(pattern: '**/target/cpd.xml')
+            recordIssues enabledForFailure: true, tool: pmdParser(pattern: '**/target/pmd.xml')
+         }
     }
 }
