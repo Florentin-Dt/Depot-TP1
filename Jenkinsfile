@@ -28,6 +28,7 @@ pipeline {
                 sh 'mvn checkstyle:checkstyle'
                 sh 'mvn spotBugs:spotBugs'
                 sh 'mvn pmd:pmd'
+                sh 'mvn compile site'
             }
         }
     }
