@@ -8,8 +8,8 @@ def nexusUrl = 'http://localhost:8081'
 def mavenRepoId = 'nexusLocal'
 
 /* *** Repositories Nexus *** */
-def nexusRepoSnapshot = "maven-snapshots"
-def nexusRepoRelease = "maven-releases"
+def nexusRepoSnapshot = "maven-snapshots" //contient les versions de l'application qui évolue mais toujours en cours de développement (branche develop)
+def nexusRepoRelease = "maven-releases" //contient les versions de l'application destinées à être déployé (branche release)
 
 
 
