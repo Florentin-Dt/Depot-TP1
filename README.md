@@ -44,7 +44,7 @@ On a accès à tous les jobs et dans le dossier archive de chaque jobs, ce que l
 ## Nexus
 
 ### Utilité
-Nexus sert de repository pour y stocker les .jar, .war ou autres des applications. Cela correspond à l'étape de publication de l'intégration continue.
+Nexus est un gestionnaire repository pour y stocker les .jar, .war ou autres des applications. Cela correspond à l'étape de publication de l'intégration continue.
 Il dispose également de service permettant de contrôler la vulnérabilité/faille de sécurité de l'application.
 
 ### Configuration 
