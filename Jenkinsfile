@@ -1,7 +1,56 @@
+// Lien vers Nexus, doit correspondre à l'instance paramétrée dans Jenkins
+def nexusId = 'Nexus_localhost'
+
+/* *** Configuration de Nexus pour Maven ***/
+// URL de Nexus
+def nexusUrl = 'http://localhost:8081'
+// Repo Id (provient du settings.xml nexus pour récupérer user/password)
+def mavenRepoId = 'nexusLocal'
+
+/* *** Repositories Nexus *** */
+def nexusRepoSnapshot = "maven-snapshots"
+def nexusRepoRelease = "maven-releases"
+
+
+
+/* *** Détail du projet, récupéré dans le pipeline en lisant le pom.xml *** */
+def groupId = ''
+def artefactId = ''
+def filePath = ''
+def packaging = ''
+def version = ''
+
+// Variable utilisée pour savoir si c'est une RELEASE ou une SNAPSHOT
+def isSnapshot = true
+
 pipeline {
     agent any
 
     stages {
+        stage('Checkout') {
+           steps {
+              checkout([$class: 'GitSCM', branches: [[name: '*/develop']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Florentin-Dt/Depot-TP1.git']]])
+           }
+        }
+        stage('Get info from POM') {
+            steps {
+                script {
+                    pom = readMavenPom file: 'pom.xml'
+                    groupId = pom.groupId
+                    artifactId = pom.artifactId
+                    packaging = pom.packaging
+                    version = pom.version
+                    filepath = "target/${artifactId}-${version}.jar"
+                    isSnapshot = version.endsWith("-SNAPSHOT")
+                }
+                echo groupId
+                echo artifactId
+                echo packaging
+                echo version
+                echo filepath
+                echo "isSnapshot: ${isSnapshot}"
+            }
+          }
         stage('Build') {
             steps {
                echo 'Build...'
@@ -31,17 +80,22 @@ pipeline {
                 sh 'mvn pmd:pmd'
             }
         }
-        stage('Publish'){
-            steps{
-                nexusPublisher nexusInstanceId: 'Nexus_localhost', nexusRepositoryId: 'maven-snapshots', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: "target/word-count-${POM_VERSION}-jar-with-dependencies.jar"]], mavenCoordinate: [artifactId: 'word-count', groupId: 'cicd.learn.tp1', packaging: 'jar', version: "${POM_VERSION}"]]]
+        stage('Push SNAPSHOT to Nexus') {
+            when { expression { isSnapshot } }
+            steps {
+              sh "mvn deploy:deploy-file -e -DgroupId=${groupId} -Dversion=${version} -Dpackaging=${packaging} -Durl=${nexusUrl}/repository/${nexusRepoSnapshot} -Dfile=${filepath} -DartifactId=${artifactId} -DrepositoryId=${mavenRepoId}"
+            }
+        }
+        stage('Push RELEASE to Nexus') {
+            when { expression { !isSnapshot } }
+            steps {
+                nexusPublisher nexusInstanceId: 'nexus_localhost', nexusRepositoryId: "${nexusRepoRelease}", packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: "${filepath}"]], mavenCoordinate: [artifactId: "${artifactId}", groupId: "${groupId}", packaging: "${packaging}", version: "${version}"]]]
             }
         }
     }
     post {
         always {
             junit '**/surefire-reports/*.xml'
-            //recordIssues enabledForFailure: true, tools: [mavenConsole(), java(), javaDoc()]
-            //recordIssues enabledForFailure: true, tools: [checkStyle(), spotBugs(), cpd(pattern: '**/target/cpd.xml'), pmdParser(pattern: '**/target/pmd.xml')]
             recordIssues enabledForFailure: true, tools: [mavenConsole(), java(), javaDoc()]
             recordIssues enabledForFailure: true, tool: checkStyle()
             recordIssues enabledForFailure: true, tool: spotBugs()
